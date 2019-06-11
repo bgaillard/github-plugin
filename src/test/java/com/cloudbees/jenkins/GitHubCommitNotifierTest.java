@@ -36,8 +36,8 @@ import static com.cloudbees.jenkins.GitHubSetCommitStatusBuilderTest.SOME_SHA;
 import static com.github.tomakehurst.wiremock.client.WireMock.postRequestedFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlPathMatching;
 import static com.github.tomakehurst.wiremock.core.WireMockConfiguration.wireMockConfig;
-import static org.jenkinsci.plugins.github.util.Messages.BuildDataHelper_NoBuildDataError;
-import static org.jenkinsci.plugins.github.util.Messages.BuildDataHelper_NoLastRevisionError;
+import static org.jenkinsci.plugins.github.util.Messages.BuildDetailsHelper_NoBuildDataError;
+import static org.jenkinsci.plugins.github.util.Messages.BuildDetailsHelper_NoLastRevisionError;
 import static org.mockito.Mockito.when;
 
 /**
@@ -89,7 +89,7 @@ public class GitHubCommitNotifierTest {
         prj.getPublishersList().add(new GitHubCommitNotifier());
         Build b = prj.scheduleBuild2(0).get();
         jRule.assertBuildStatus(Result.FAILURE, b);
-        jRule.assertLogContains(BuildDataHelper_NoBuildDataError(), b);
+        jRule.assertLogContains(BuildDetailsHelper_NoBuildDataError(), b);
     }
 
     @Test
@@ -101,7 +101,7 @@ public class GitHubCommitNotifierTest {
         //Git plugin 2.4.1 + does not include BuildData if checkout fails, so we add it if needed
         Build b = safelyGenerateBuild(prj);
         jRule.assertBuildStatus(Result.FAILURE, b);
-        jRule.assertLogContains(BuildDataHelper_NoLastRevisionError(), b);
+        jRule.assertLogContains(BuildDetailsHelper_NoLastRevisionError(), b);
     }
 
     @Test

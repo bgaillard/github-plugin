@@ -11,6 +11,7 @@ import hudson.model.FreeStyleProject;
 import hudson.model.Result;
 import hudson.plugins.git.Revision;
 import hudson.plugins.git.util.BuildData;
+import hudson.plugins.git.util.BuildDetails;
 import org.apache.commons.lang3.StringUtils;
 import org.eclipse.jgit.lib.ObjectId;
 import org.jenkinsci.plugins.github.config.GitHubPluginConfig;
@@ -53,7 +54,7 @@ public class GitHubCommitStatusSetterTest {
     public static final String SOME_SHA = StringUtils.repeat("f", 40);
 
     @Mock
-    public BuildData data;
+    public BuildData buildData;
 
     @Mock
     public Revision rev;
@@ -79,12 +80,11 @@ public class GitHubCommitStatusSetterTest {
     public ExternalResource prep = new ExternalResource() {
         @Override
         protected void before() throws Throwable {
-            when(data.getLastBuiltRevision()).thenReturn(rev);
-            data.lastBuild = new hudson.plugins.git.util.Build(rev, rev, 0, Result.SUCCESS);
+            when(buildData.getLastBuiltRevision()).thenReturn(rev);
+            buildData.lastBuild = new hudson.plugins.git.util.Build(rev, rev, 0, Result.SUCCESS);
             when(rev.getSha1()).thenReturn(ObjectId.fromString(SOME_SHA));
         }
     };
-
 
     @Test
     public void shouldSetGHCommitStatus() throws Exception {
@@ -101,7 +101,7 @@ public class GitHubCommitStatusSetterTest {
         prj.getBuildersList().add(new TestBuilder() {
             @Override
             public boolean perform(AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener) {
-                build.addAction(data);
+                build.addAction(buildData);
                 return true;
             }
         });
